@@ -150,7 +150,7 @@ const AiChatWindow = ({ messages, isLoading, onSendMessage, lessonTitle }: {
         {messages.filter(m => m.role !== 'system').length === 0 && (
           <div className="text-center py-8">
             <Sparkles className="w-12 h-12 text-blue-500 mx-auto mb-4" />
-            <p className="text-gray-600 mb-4">Hi! I'm your AI tutor. Ask me anything about {lessonTitle}!</p>
+            <p className="text-gray-600 mb-4">Hi! I&apos;m your AI tutor. Ask me anything about {lessonTitle}!</p>
             <div className="grid grid-cols-1 gap-2">
               {quickQuestions.map((question, i) => (
                 <button
@@ -234,17 +234,6 @@ export default function LessonClient({ lessonId }: { lessonId?: string }) {
   const [isChatOpen, setIsChatOpen] = useState(false);
   const [progress, setProgress] = useState(0);
 
-  // Check if this is a primary student (grades 1-3) and if the lesson should be gamified
-  const isPrimaryStudent = userData?.grade?.toLowerCase().includes('primary');
-  const primaryGrade = isPrimaryStudent ? parseInt(userData?.grade?.match(/\d+/)?.[0] || '0') : 0;
-  const shouldShowGame = isPrimaryStudent && primaryGrade <= 3 && 
-    ['counting-numbers', 'addition-basics', 'subtraction-basics', 'shapes-colors'].includes(lessonId || '');
-
-  // If this is a primary 1-3 student with a gamified lesson, show the game version
-  if (shouldShowGame) {
-    return <PrimaryGameLesson lessonId={lessonId || ''} lessonTitle={lessonTitle} />;
-  }
-
   // Enhanced system prompt for teaching
   const systemPrompt = `You are EduMath GH AI Tutor, an expert mathematics teacher for Ghanaian students.
 
@@ -261,10 +250,11 @@ TEACHING APPROACH:
 LESSON CONTENT TO TEACH:
 ${JSON.stringify(lessonData, null, 2)}
 
-PERSONALITY: Be patient, encouraging, and enthusiastic about mathematics. Use simple language appropriate for the student's level.
+PERSONALITY: Be patient, encouraging, and enthusiastic about mathematics. Use simple language appropriate for the student&apos;s level.
 
 Remember: Your goal is to help the student truly understand the concept, not just memorize formulas.`;
   
+  // Always call hooks before any conditional logic
   const { messages, isLoading, sendMessage } = useAiTutor(systemPrompt);
 
   useEffect(() => {
@@ -273,8 +263,19 @@ Remember: Your goal is to help the student truly understand the concept, not jus
     return () => clearTimeout(timer);
   }, []);
 
+  // Check if this is a primary student (grades 1-3) and if the lesson should be gamified
+  const isPrimaryStudent = userData?.grade?.toLowerCase().includes('primary');
+  const primaryGrade = isPrimaryStudent ? parseInt(userData?.grade?.match(/\d+/)?.[0] || '0') : 0;
+  const shouldShowGame = isPrimaryStudent && primaryGrade <= 3 && 
+    ['counting-numbers', 'addition-basics', 'subtraction-basics', 'shapes-colors'].includes(lessonId || '');
+
+  // If this is a primary 1-3 student with a gamified lesson, show the game version
+  if (shouldShowGame) {
+    return <PrimaryGameLesson lessonId={lessonId || ''} lessonTitle={lessonTitle} />;
+  }
+
   const handleStartLesson = () => {
-    const introMessage = `Hi! I'm ready to learn about ${lessonTitle}. Can you start by explaining what this topic is about and why it's important?`;
+    const introMessage = `Hi! I&apos;m ready to learn about ${lessonTitle}. Can you start by explaining what this topic is about and why it&apos;s important?`;
     sendMessage(introMessage);
     setIsChatOpen(true);
     setProgress(50);
@@ -436,7 +437,7 @@ Remember: Your goal is to help the student truly understand the concept, not jus
                 <h3 className="text-xl font-bold text-green-900">Ready to Practice?</h3>
               </div>
               <p className="text-green-800 mb-4">
-                Now that you've learned the basics, let's practice with our AI tutor! Click the chat button to get personalized help and practice problems.
+                Now that you&apos;ve learned the basics, let&apos;s practice with our AI tutor! Click the chat button to get personalized help and practice problems.
               </p>
               <Button onClick={handleStartLesson} className="btn-modern gradient-success text-white rounded-xl">
                 <Brain className="w-4 h-4 mr-2" />

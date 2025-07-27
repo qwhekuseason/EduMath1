@@ -2,6 +2,7 @@
 
 import { useEffect } from 'react';
 import Link from 'next/link';
+import Image from 'next/image';
 import { GraduationCap, Target, Heart, MapPin, TrendingUp, Award, Users, Lightbulb } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -146,7 +147,7 @@ export default function AboutPage() {
                 Founded in Accra in 2018 by passionate Ghanaian educators, EduMath GH addresses the need for high-quality, locally relevant maths resources. We saw students struggling with foreign examples and knew we could do better.
               </p>
               <p className="mb-6">
-                We believe every Ghanaian student deserves the tools to excel in mathematics, regardless of location or resources. That's why our core platform is{' '}
+                We believe every Ghanaian student deserves the tools to excel in mathematics, regardless of location or resources. That&apos;s why our core platform is{' '}
                 <span className="text-green-600 font-bold">completely free</span>.
               </p>
               <div className="flex items-center space-x-4 mt-6">
@@ -194,9 +195,11 @@ export default function AboutPage() {
               <CardContent className="p-8">
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-center">
                   <div className="text-center">
-                    <img 
+                    <Image 
                       src="https://images.pexels.com/photos/2379004/pexels-photo-2379004.jpeg?auto=compress&cs=tinysrgb&w=400" 
                       alt="Kwame Osei - Founder" 
+                      width={192}
+                      height={192}
                       className="w-48 h-48 rounded-full mx-auto mb-4 object-cover border-4 border-blue-500"
                     />
                     <h5 className="font-semibold text-lg">Kwame Osei</h5>
@@ -204,16 +207,16 @@ export default function AboutPage() {
                   </div>
                   <div className="md:col-span-2">
                     <blockquote className="text-lg italic mb-4">
-                      "As a former maths teacher in Accra, I saw bright students stumble because the learning materials didn't speak their language or reflect their world."
+                      &quot;As a former maths teacher in Accra, I saw bright students stumble because the learning materials didn&apos;t speak their language or reflect their world.&quot;
                     </blockquote>
                     <p className="mb-4">
-                      "Why learn about dollars and cents when we use Cedis and Pesewas? Why solve problems about foreign cities when we have Accra, Kumasi, Tamale? This disconnect was hindering real understanding."
+                      &quot;Why learn about dollars and cents when we use Cedis and Pesewas? Why solve problems about foreign cities when we have Accra, Kumasi, Tamale? This disconnect was hindering real understanding.&quot;
                     </p>
                     <p className="mb-4">
                       Fuelled by this, and after further studies in Education Technology, I brought together Ghanaian curriculum experts and tech innovators in 2018. Our goal: create a world-class maths platform, perfectly aligned with WAEC, rooted in Ghanaian culture, and accessible to everyone.
                     </p>
                     <p>
-                      We started small, proving our impact school by school. Today, EduMath GH is a testament to the power of local solutions. We are proudly 'Made in Ghana, for Ghana', and committed to offering our core learning platform{' '}
+                      We started small, proving our impact school by school. Today, EduMath GH is a testament to the power of local solutions. We are proudly &apos;Made in Ghana, for Ghana&apos;, and committed to offering our core learning platform{' '}
                       <span className="text-green-600 font-bold">100% free</span> to empower the next generation.
                     </p>
                     <div className="flex items-center mt-6">
@@ -245,9 +248,11 @@ export default function AboutPage() {
               <div key={index} className="group animate-on-scroll">
                 <Card className="overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 group-hover:-translate-y-2">
                   <div className="relative">
-                    <img 
+                    <Image 
                       src={member.image} 
                       alt={member.name} 
+                      width={400}
+                      height={320}
                       className="w-full h-80 object-cover transition-transform duration-500 group-hover:scale-110"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-blue-600/90 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-400 flex items-end">

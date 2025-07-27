@@ -193,7 +193,7 @@ export default function LoginPage() {
             
             <CardFooter className="bg-gray-50 text-center py-4">
               <p className="text-sm text-gray-600">
-                Don't have an account?{' '}
+                                  Don&apos;t have an account?{' '}
                 <Link href="/signup" className="text-blue-500 hover:text-blue-600 font-medium">
                   Sign up
                 </Link>

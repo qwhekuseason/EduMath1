@@ -9,13 +9,39 @@ import { Badge } from '@/components/ui/badge';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import Link from 'next/link';
 
-interface PrimaryGameLessonProps {
-  lessonId: string;
-  lessonTitle: string;
+// Game data for different lessons with proper types
+interface CountingLevel {
+  objects: number;
+  answer: number;
+  items: string;
+  question: string;
+}
+
+interface MathLevel {
+  num1: number;
+  num2: number;
+  answer: number;
+  story: string;
+}
+
+interface ShapeLevel {
+  shape: string;
+  name: string;
+  options: string[];
+  answer: string;
+}
+
+type GameLevel = CountingLevel | MathLevel | ShapeLevel;
+
+interface GameData {
+  title: string;
+  description: string;
+  type: 'counting' | 'addition' | 'subtraction' | 'shapes';
+  levels: GameLevel[];
 }
 
 // Game data for different lessons
-const gameData = {
+const gameData: Record<string, GameData> = {
   'counting-numbers': {
     title: 'Counting Adventure! 🎯',
     description: 'Help Kofi count objects to win stars!',
@@ -26,7 +52,7 @@ const gameData = {
       { objects: 7, answer: 7, items: '🌟', question: 'How many stars can you see?' },
       { objects: 4, answer: 4, items: '🚗', question: 'Count the cars on the road!' },
       { objects: 6, answer: 6, items: '🎈', question: 'How many balloons are there?' }
-    ]
+    ] as CountingLevel[]
   },
   'addition-basics': {
     title: 'Addition Magic! ✨',
@@ -38,7 +64,7 @@ const gameData = {
       { num1: 4, num2: 3, answer: 7, story: 'Ama bought 4 pencils. Her friend gave her 3 more. How many pencils does she have?' },
       { num1: 5, num2: 2, answer: 7, story: 'In the classroom, there are 5 boys and 2 girls. How many children in total?' },
       { num1: 6, num2: 4, answer: 10, story: 'Kofi saved 6 cedis. His father gave him 4 more cedis. How much money does he have?' }
-    ]
+    ] as MathLevel[]
   },
   'subtraction-basics': {
     title: 'Subtraction Safari! 🦁',
@@ -50,7 +76,7 @@ const gameData = {
       { num1: 8, num2: 5, answer: 3, story: 'There were 8 chickens in the yard. 5 went inside. How many are still outside?' },
       { num1: 6, num2: 4, answer: 2, story: 'Kwame had 6 marbles. He lost 4 while playing. How many marbles does he have now?' },
       { num1: 9, num2: 6, answer: 3, story: 'There were 9 students in class. 6 went home early. How many students are left?' }
-    ]
+    ] as MathLevel[]
   },
   'shapes-colors': {
     title: 'Shape Detective! 🔍',
@@ -62,11 +88,11 @@ const gameData = {
       { shape: '🔺', name: 'Triangle', options: ['Circle', 'Square', 'Triangle'], answer: 'Triangle' },
       { shape: '⭐', name: 'Star', options: ['Star', 'Heart', 'Diamond'], answer: 'Star' },
       { shape: '💎', name: 'Diamond', options: ['Star', 'Heart', 'Diamond'], answer: 'Diamond' }
-    ]
+    ] as ShapeLevel[]
   }
 };
 
-export default function PrimaryGameLesson({ lessonId, lessonTitle }: PrimaryGameLessonProps) {
+export default function PrimaryGameLesson({ lessonId, lessonTitle }: { lessonId: string; lessonTitle: string }) {
   const [currentLevel, setCurrentLevel] = useState(0);
   const [score, setScore] = useState(0);
   const [lives, setLives] = useState(3);
@@ -96,7 +122,16 @@ export default function PrimaryGameLesson({ lessonId, lessonTitle }: PrimaryGame
 
   const handleAnswer = (answer: string | number) => {
     setSelectedAnswer(answer);
-    const correct = answer === currentQuestion?.answer;
+    let correct = false;
+    
+    if (currentQuestion) {
+      if (isCountingLevel(currentQuestion) || isMathLevel(currentQuestion)) {
+        correct = parseInt(answer.toString()) === currentQuestion.answer;
+      } else if (isShapeLevel(currentQuestion)) {
+        correct = answer === currentQuestion.answer;
+      }
+    }
+    
     setIsCorrect(correct);
     setShowFeedback(true);
 
@@ -111,7 +146,7 @@ export default function PrimaryGameLesson({ lessonId, lessonTitle }: PrimaryGame
     setTimeout(() => {
       setShowFeedback(false);
       if (correct || lives > 1) {
-        if (currentLevel < game.levels.length - 1) {
+        if (game && currentLevel < game.levels.length - 1) {
           setCurrentLevel(prev => prev + 1);
         } else {
           setGameCompleted(true);
@@ -134,8 +169,21 @@ export default function PrimaryGameLesson({ lessonId, lessonTitle }: PrimaryGame
     setShowCelebration(false);
   };
 
+  // Type guard functions
+  const isCountingLevel = (level: GameLevel): level is CountingLevel => {
+    return 'objects' in level && 'question' in level;
+  };
+
+  const isMathLevel = (level: GameLevel): level is MathLevel => {
+    return 'num1' in level && 'num2' in level && 'story' in level;
+  };
+
+  const isShapeLevel = (level: GameLevel): level is ShapeLevel => {
+    return 'shape' in level && 'name' in level && 'options' in level;
+  };
+
   const renderCountingGame = () => {
-    if (!currentQuestion) return null;
+    if (!currentQuestion || !isCountingLevel(currentQuestion)) return null;
     
     return (
       <div className="text-center space-y-8">
@@ -149,80 +197,86 @@ export default function PrimaryGameLesson({ lessonId, lessonTitle }: PrimaryGame
           ))}
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[currentQuestion.answer - 1, currentQuestion.answer, currentQuestion.answer + 1, currentQuestion.answer + 2].map((num) => (
-            <Button
-              key={num}
-              onClick={() => handleAnswer(num)}
-              className="h-20 text-3xl font-bold rounded-2xl bg-gradient-to-br from-purple-500 to-pink-600 hover:from-purple-600 hover:to-pink-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-              disabled={showFeedback}
-            >
-              {num}
-            </Button>
-          ))}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-md mx-auto">
+          {[currentQuestion.answer - 1, currentQuestion.answer, currentQuestion.answer + 1, currentQuestion.answer + 2]
+            .filter(num => num > 0)
+            .sort(() => Math.random() - 0.5)
+            .map((option) => (
+              <Button
+                key={option}
+                onClick={() => handleAnswer(option.toString())}
+                className={`h-16 text-2xl font-bold rounded-2xl transition-all duration-300 ${
+                  selectedAnswer === option.toString()
+                    ? 'bg-blue-500 text-white scale-105 shadow-lg'
+                    : 'bg-white hover:bg-blue-50 text-blue-600 border-2 border-blue-200 hover:border-blue-400'
+                }`}
+                disabled={showFeedback}
+              >
+                {option}
+              </Button>
+            ))}
         </div>
       </div>
     );
   };
 
   const renderMathGame = () => {
-    if (!currentQuestion) return null;
+    if (!currentQuestion || !isMathLevel(currentQuestion)) return null;
     
     return (
       <div className="text-center space-y-8">
-        <div className="bg-gradient-to-br from-green-50 to-emerald-100 p-8 rounded-2xl">
+        <div className="bg-gradient-to-br from-green-50 to-emerald-100 p-8 rounded-2xl mb-8">
           <p className="text-lg text-gray-700 mb-6">{currentQuestion.story}</p>
-          
-          <div className="flex items-center justify-center space-x-4 text-4xl font-bold text-gray-900 mb-8">
-            <span className="bg-blue-500 text-white px-6 py-4 rounded-2xl shadow-lg">
-              {currentQuestion.num1}
-            </span>
-            <span className="text-blue-500">
-              {game.type === 'addition' ? '+' : '−'}
-            </span>
-            <span className="bg-green-500 text-white px-6 py-4 rounded-2xl shadow-lg">
-              {currentQuestion.num2}
-            </span>
-            <span className="text-purple-500">=</span>
-            <span className="bg-purple-500 text-white px-6 py-4 rounded-2xl shadow-lg">?</span>
+          <div className="text-4xl font-bold text-green-600 mb-4">
+            {currentQuestion.num1} {game?.type === 'addition' ? '+' : '-'} {currentQuestion.num2} = ?
           </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          {[currentQuestion.answer - 2, currentQuestion.answer, currentQuestion.answer + 1, currentQuestion.answer - 1].sort(() => Math.random() - 0.5).map((num, index) => (
-            <Button
-              key={index}
-              onClick={() => handleAnswer(num)}
-              className="h-20 text-3xl font-bold rounded-2xl bg-gradient-to-br from-orange-500 to-red-600 hover:from-orange-600 hover:to-red-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
-              disabled={showFeedback}
-            >
-              {num}
-            </Button>
-          ))}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-md mx-auto">
+          {[currentQuestion.answer - 2, currentQuestion.answer, currentQuestion.answer + 1, currentQuestion.answer + 3]
+            .filter(num => num >= 0)
+            .sort(() => Math.random() - 0.5)
+            .map((option) => (
+              <Button
+                key={option}
+                onClick={() => handleAnswer(option.toString())}
+                className={`h-16 text-2xl font-bold rounded-2xl transition-all duration-300 ${
+                  selectedAnswer === option.toString()
+                    ? 'bg-green-500 text-white scale-105 shadow-lg'
+                    : 'bg-white hover:bg-green-50 text-green-600 border-2 border-green-200 hover:border-green-400'
+                }`}
+                disabled={showFeedback}
+              >
+                {option}
+              </Button>
+            ))}
         </div>
       </div>
     );
   };
 
   const renderShapeGame = () => {
-    if (!currentQuestion) return null;
+    if (!currentQuestion || !isShapeLevel(currentQuestion)) return null;
     
     return (
       <div className="text-center space-y-8">
         <h3 className="text-2xl font-bold text-gray-900 mb-4">What shape is this?</h3>
         
-        <div className="bg-gradient-to-br from-yellow-50 to-orange-100 p-12 rounded-2xl">
-          <div className="text-9xl mb-4 animate-pulse">
-            {currentQuestion.shape}
-          </div>
+        <div className="bg-gradient-to-br from-purple-50 to-pink-100 p-8 rounded-2xl mb-8">
+          <div className="text-8xl mb-4">{currentQuestion.shape}</div>
+          <p className="text-lg text-gray-700">Click the correct name for this shape!</p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          {currentQuestion.options.map((option, index) => (
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 max-w-md mx-auto">
+          {currentQuestion.options.map((option) => (
             <Button
-              key={index}
+              key={option}
               onClick={() => handleAnswer(option)}
-              className="h-16 text-xl font-bold rounded-2xl bg-gradient-to-br from-teal-500 to-cyan-600 hover:from-teal-600 hover:to-cyan-700 text-white shadow-lg hover:shadow-xl transform hover:scale-105 transition-all duration-300"
+              className={`h-16 text-xl font-bold rounded-2xl transition-all duration-300 ${
+                selectedAnswer === option
+                  ? 'bg-purple-500 text-white scale-105 shadow-lg'
+                  : 'bg-white hover:bg-purple-50 text-purple-600 border-2 border-purple-200 hover:border-purple-400'
+              }`}
               disabled={showFeedback}
             >
               {option}
@@ -234,7 +288,9 @@ export default function PrimaryGameLesson({ lessonId, lessonTitle }: PrimaryGame
   };
 
   const renderGameContent = () => {
-    switch (game?.type) {
+    if (!game) return null;
+    
+    switch (game.type) {
       case 'counting':
         return renderCountingGame();
       case 'addition':
@@ -243,7 +299,7 @@ export default function PrimaryGameLesson({ lessonId, lessonTitle }: PrimaryGame
       case 'shapes':
         return renderShapeGame();
       default:
-        return <div>Game not found</div>;
+        return <div>Game type not supported</div>;
     }
   };
 
@@ -252,7 +308,7 @@ export default function PrimaryGameLesson({ lessonId, lessonTitle }: PrimaryGame
       <DashboardLayout>
         <div className="text-center py-16">
           <h1 className="text-2xl font-bold text-gray-900 mb-4">Game Not Available</h1>
-          <p className="text-gray-600 mb-8">This lesson doesn't have a game version yet.</p>
+          <p className="text-gray-600 mb-8">This lesson doesn&apos;t have a game version yet.</p>
           <Button asChild>
             <Link href="/dashboard/lessons">Back to Lessons</Link>
           </Button>

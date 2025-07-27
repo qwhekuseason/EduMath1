@@ -8,8 +8,10 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import { useState, useEffect } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 
-export default function JhsDashboard({ userData }: { userData: any }) {
+export default function JhsDashboard() {
+  const { userData } = useAuth();
   const [overallProgress, setOverallProgress] = useState(0);
 
   useEffect(() => {
@@ -48,8 +50,8 @@ export default function JhsDashboard({ userData }: { userData: any }) {
                 <GraduationCap className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-4xl font-bold text-gradient">Welcome Back, {userData.firstName}!</h1>
-                <p className="text-xl text-gray-600 mt-2">Ready for today's BECE prep session? 🎯</p>
+                <h1 className="text-4xl font-bold text-gradient">Welcome Back, {userData?.firstName || 'Student'}!</h1>
+                <p className="text-xl text-gray-600 mt-2">Ready for today&apos;s BECE prep session? 🎯</p>
               </div>
             </div>
           </div>

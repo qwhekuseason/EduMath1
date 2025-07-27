@@ -2,7 +2,8 @@
 
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useMemo } from 'react';
+import Link from 'next/link';
 import { ClipboardCheck, Clock, CheckCircle, AlertTriangle, Calendar, Filter, Tag, Send as PaperPlane, Sparkles, Brain, Target } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -27,13 +28,13 @@ export default function AssignmentsPage() {
   const { userData, loading } = useAuth(); // <-- Get user data and loading state
   const [filterStatus, setFilterStatus] = useState('all');
 
-  // This is your original, complete list of mock assignments
-  const allAssignments = [
+  // This is your original, complete list of mock assignments wrapped in useMemo
+  const allAssignments = useMemo(() => [
     { id: 1, title: 'Linear Equations Practice', subject: 'Algebra', description: 'Solve 10 linear equations...', dueDate: '15 Nov 2024', status: 'pending', progress: 0, totalQuestions: 10, completedQuestions: 0 },
     { id: 2, title: 'Geometry Angles Quiz', subject: 'Geometry', description: 'Calculate missing angles...', dueDate: '10 Nov 2024', submittedDate: '10 Nov 2024', status: 'submitted', progress: 100, totalQuestions: 8, completedQuestions: 8 },
     { id: 3, title: 'Fractions Test', subject: 'Number Theory', description: 'Operations with fractions...', dueDate: '05 Nov 2024', submittedDate: '05 Nov 2024', gradedDate: '05 Nov 2024', status: 'graded', progress: 100, score: 85, totalQuestions: 12, completedQuestions: 12 },
     { id: 4, title: 'Word Problems Set', subject: 'Algebra', description: 'Solve 5 word problems...', dueDate: '01 Nov 2024', status: 'overdue', progress: 0, totalQuestions: 5, completedQuestions: 0 }
-  ];
+  ], []);
 
   // --- (NEW) State to hold the assignments relevant to the user's grade ---
   const [userAssignments, setUserAssignments] = useState(allAssignments);
@@ -46,7 +47,7 @@ export default function AssignmentsPage() {
       const filtered = allAssignments.filter(a => subjectToLevel(a.subject) === userLevel);
       setUserAssignments(filtered);
     }
-  }, [userData]); // This effect runs whenever userData changes
+  }, [userData, allAssignments]); // This effect runs whenever userData or allAssignments changes
 
   // --- (MODIFIED) Now, all logic uses the dynamic 'userAssignments' list ---
   const statusCounts = {
@@ -252,10 +253,10 @@ export default function AssignmentsPage() {
                     : `No ${filterStatus} assignments at the moment.`}
                 </p>
                 <Button asChild className="btn-modern gradient-success text-white rounded-xl">
-                  <a href="/dashboard/lessons">
+                  <Link href="/dashboard/lessons">
                     <Sparkles className="w-4 h-4 mr-2" />
                     Continue Learning
-                  </a>
+                  </Link>
                 </Button>
               </div>
             )}

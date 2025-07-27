@@ -1,6 +1,7 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
 import { 
   TrendingUp, 
   BookOpen, 
@@ -149,7 +150,7 @@ export default function ProgressPage() {
       }
     ];
 
-    if (progressData?.studyStreak >= 3) {
+    if (progressData?.studyStreak && progressData.studyStreak >= 3) {
       achievements.push({
         title: 'Study Streak Master! 🔥',
         description: `${progressData.studyStreak} days in a row`,
@@ -159,7 +160,7 @@ export default function ProgressPage() {
       });
     }
 
-    if (progressData?.topicsMastered >= 1) {
+    if (progressData?.topicsMastered && progressData.topicsMastered >= 1) {
       achievements.push({
         title: 'First Topic Mastered! ⭐',
         description: 'Completed your first lesson',
@@ -450,10 +451,10 @@ export default function ProgressPage() {
               {/* Quick Actions */}
               <div className="pt-4 border-t space-y-3">
                 <Button className="w-full btn-modern gradient-primary text-white rounded-xl" asChild>
-                  <a href="/dashboard/lessons">
+                  <Link href="/dashboard/lessons">
                     <BookOpen className="w-4 h-4 mr-2" />
                     Continue Learning
-                  </a>
+                  </Link>
                 </Button>
                 <Button variant="outline" className="w-full rounded-xl" asChild>
                   <a href="/dashboard/assignments">
@@ -501,10 +502,10 @@ export default function ProgressPage() {
                 <h3 className="text-lg font-semibold text-gray-900 mb-2">More achievements coming!</h3>
                 <p className="text-gray-600 mb-4">Complete lessons and assignments to unlock new badges</p>
                 <Button asChild className="btn-modern gradient-success text-white rounded-xl">
-                  <a href="/dashboard/lessons">
+                  <Link href="/dashboard/lessons">
                     <Sparkles className="w-4 h-4 mr-2" />
                     Start Learning
-                  </a>
+                  </Link>
                 </Button>
               </div>
             )}

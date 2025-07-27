@@ -45,8 +45,8 @@
     "cmdk": "^1.0.0",
     "date-fns": "^3.6.0",
     "embla-carousel-react": "^8.3.0",
-    "eslint": "8.49.0",
-    "eslint-config-next": "13.5.1",
+    "eslint": "^9.0.0",
+    "eslint-config-next": "^15.4.4",
     "input-otp": "^1.2.4",
     "lottie-react": "^2.4.1",
     "lucide-react": "^0.446.0",
@@ -69,6 +69,6 @@
   "devDependencies": {
     "@types/node": "24.1.0",
     "@types/react": "18.3.23",
-    "typescript": "5.8.3"
+    "typescript": "^5.3.3"
   }
 }
