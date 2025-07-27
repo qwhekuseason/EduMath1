@@ -50,13 +50,13 @@ export default function DashboardPage() {
   // This is the core logic: Render the correct dashboard based on the category
   switch (category) {
     case 'primary':
-      return <PrimaryDashboard userData={userData} />;
+      return <PrimaryDashboard />;
     case 'jhs':
-      return <JhsDashboard userData={userData} />;
+      return <JhsDashboard />;
     case 'shs':
-      return <ShsDashboard userData={userData} />;
+      return <ShsDashboard />;
     default:
       // Fallback to a default dashboard if something goes wrong
-      return <PrimaryDashboard userData={userData} />;
+      return <PrimaryDashboard />;
   }
 }

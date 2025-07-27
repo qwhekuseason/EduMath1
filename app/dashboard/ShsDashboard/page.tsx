@@ -8,13 +8,15 @@ import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import { useState, useEffect } from 'react';
+import { useAuth } from '@/hooks/useAuth';
 
-export default function ShsDashboard({ userData }: { userData: any }) {
+export default function ShsDashboard() {
+  const { userData } = useAuth();
   const [overallProgress, setOverallProgress] = useState(0);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setOverallProgress(0); // Could be dynamic in future
+      setOverallProgress(0);
     }, 500);
     return () => clearTimeout(timer);
   }, []);
@@ -48,8 +50,8 @@ export default function ShsDashboard({ userData }: { userData: any }) {
                 <GraduationCap className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-4xl font-bold text-gradient">Welcome Back, {userData.firstName}!</h1>
-                <p className="text-xl text-gray-600 mt-2">Ready for today's WASSCE prep session? 🚀</p>
+                <h1 className="text-4xl font-bold text-gradient">Welcome Back, {userData?.firstName || 'Student'}!</h1>
+                <p className="text-xl text-gray-600 mt-2">Ready for today&apos;s WASSCE prep session? 🎯</p>
               </div>
             </div>
           </div>

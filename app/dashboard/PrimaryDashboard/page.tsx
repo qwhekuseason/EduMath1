@@ -1,22 +1,22 @@
 'use client';
 
 import Link from 'next/link';
-import { BookOpen, ClipboardCheck, Award, Play, HelpCircle, FileText, PieChart, Sparkles, TrendingUp, Target } from 'lucide-react';
+import { GraduationCap, TrendingUp, BookOpen, ClipboardCheck, Award, Play, HelpCircle, FileText, PieChart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Progress } from '@/components/ui/progress';
 import { Badge } from '@/components/ui/badge';
 import DashboardLayout from '@/components/dashboard/DashboardLayout';
 import { useState, useEffect } from 'react';
-import Lottie from 'lottie-react';
-import mascotAnimation from '@/app/lottie/RobotSaludando.json'; // Adjust path if necessary
+import { useAuth } from '@/hooks/useAuth';
 
-export default function PrimaryDashboard({ userData }: { userData: any }) {
+export default function PrimaryDashboard() {
+  const { userData } = useAuth();
   const [overallProgress, setOverallProgress] = useState(0);
 
   useEffect(() => {
     const timer = setTimeout(() => {
-      setOverallProgress(0); // Set default progress here if needed
+      setOverallProgress(0);
     }, 500);
     return () => clearTimeout(timer);
   }, []);
@@ -44,19 +44,16 @@ export default function PrimaryDashboard({ userData }: { userData: any }) {
     <DashboardLayout>
       <div className="space-y-8">
         <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6">
-          <div className="flex-1">
+          <div>
             <div className="flex items-center space-x-3 mb-4">
               <div className="w-12 h-12 gradient-primary rounded-2xl flex items-center justify-center">
-                <Sparkles className="w-6 h-6 text-white" />
+                <GraduationCap className="w-6 h-6 text-white" />
               </div>
               <div>
-                <h1 className="text-4xl font-bold text-gradient">Welcome Back, {userData.firstName}!</h1>
-                <p className="text-xl text-gray-600 mt-2">Let's explore some fun math today! 🎯</p>
+                <h1 className="text-4xl font-bold text-gradient">Welcome Back, {userData?.firstName || 'Student'}!</h1>
+                <p className="text-xl text-gray-600 mt-2">Let&apos;s learn math with fun games! 🎮</p>
               </div>
             </div>
-          </div>
-          <div className="hidden lg:block w-40 h-40">
-            <Lottie animationData={mascotAnimation} loop autoplay />
           </div>
         </div>
 
@@ -87,7 +84,7 @@ export default function PrimaryDashboard({ userData }: { userData: any }) {
                 </div>
               </div>
               <h3 className="text-xl font-bold mb-3 text-gray-900">Overall Progress</h3>
-              <p className="text-gray-600">You're just getting started! 🌟</p>
+              <p className="text-gray-600">You&apos;re just getting started! 🌟</p>
             </CardContent>
           </Card>
 
@@ -138,7 +135,7 @@ export default function PrimaryDashboard({ userData }: { userData: any }) {
         <Card className="border-0 shadow-modern">
           <CardContent className="p-8">
             <h3 className="text-2xl font-bold mb-8 flex items-center">
-              <Target className="w-6 h-6 mr-3 text-blue-500" />
+              <TrendingUp className="w-6 h-6 mr-3 text-blue-500" />
               Quick Actions
             </h3>
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6">

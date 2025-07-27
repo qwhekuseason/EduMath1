@@ -1,6 +1,7 @@
 import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
+import Script from 'next/script';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -24,11 +25,26 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en-GH">
-      <body className={inter.className}>{children}
-      <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"></script>
-         <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"></script>
+      <body className={inter.className}>
+        {children}
+        
+        {/* Firebase scripts loaded asynchronously */}
+        <Script 
+          src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"
+          strategy="lazyOnload"
+        />
+        <Script 
+          src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"
+          strategy="lazyOnload"
+        />
+        <Script 
+          src="https://www.gstatic.com/firebasejs/9.22.2/firebase-firestore-compat.js"
+          strategy="lazyOnload"
+        />
+        <Script 
+          src="https://www.gstatic.com/firebasejs/9.22.2/firebase-storage-compat.js"
+          strategy="lazyOnload"
+        />
       </body>
     </html>
   );

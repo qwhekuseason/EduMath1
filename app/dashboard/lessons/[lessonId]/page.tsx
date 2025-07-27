@@ -29,10 +29,13 @@ export async function generateStaticParams() {
   }));
 }
 
-// --- (THE FIX IS HERE) ---
-// We add a check to ensure params and lessonId exist before rendering.
-export default function LessonDetailPage({ params }: { params?: { lessonId?: string } }) {
-  const { lessonId } = params || {}; // Safely destructure params
+// Updated for Next.js 15 async params
+export default async function LessonDetailPage({ 
+  params 
+}: { 
+  params: Promise<{ lessonId?: string }> 
+}) {
+  const { lessonId } = await params;
 
   // If there's no lessonId in the URL, render a 404 page.
   // This prevents the crash.

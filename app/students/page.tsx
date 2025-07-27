@@ -328,7 +328,7 @@ export default function StudentsPage() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 animate-on-scroll">
           <h2 className="text-3xl md:text-4xl font-bold mb-6">Ready to Master Maths?</h2>
           <p className="text-xl mb-6">
-            Stop struggling and start succeeding. Join thousands of Ghanaian students using EduMath GH's powerful AI learning platform{' '}
+            Stop struggling and start succeeding. Join thousands of Ghanaian students using EduMath GH&apos;s powerful AI learning platform{' '}
             <span className="text-green-300 font-bold">for free</span>!
           </p>
           <div className="flex items-center justify-center mb-6">
